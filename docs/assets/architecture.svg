@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="790" viewBox="0 0 1440 790" role="img" aria-labelledby="title desc">
+<title id="title">IT Assist architecture</title><desc id="desc">Employee chat connects to n8n triage and business priority. Approved Confluence knowledge is indexed in Qdrant. Eligible requests receive guidance, while engineers receive Jira tickets and Slack notifications.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1328"/><stop offset="1" stop-color="#152b45"/></linearGradient><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#65d8c0"/></marker></defs>
+<rect width="1440" height="790" rx="24" fill="url(#bg)"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<rect x="58" y="46" width="46" height="46" rx="14" fill="#64dfbe"/><text x="81" y="77" fill="#0b1328" font-weight="700" font-size="23" text-anchor="middle">IT</text>
+<text x="122" y="79" fill="#f5f8fd" font-size="34" font-weight="700">IT Assist</text>
+<text x="58" y="137" fill="#eef4fa" font-size="34" font-weight="700">From employee request to actionable IT support</text>
+<text x="58" y="177" fill="#aabbd0" font-size="22">Conversational support · approved knowledge · business-aware decisions</text>
+<rect x="58" y="244" width="268" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="58" y="260" width="4" height="108" rx="2" fill="#64dfbe"/>
+<text x="80" y="279" fill="#f1f6fc" font-weight="700" font-size="23">Employee chat</text>
+<text x="80" y="312" fill="#b9c9d9" font-size="19">Guided intake</text>
+<text x="80" y="339" fill="#b9c9d9" font-size="19">Useful follow-up questions</text>
+<rect x="394" y="244" width="310" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="394" y="260" width="4" height="108" rx="2" fill="#64dfbe"/>
+<text x="416" y="279" fill="#f1f6fc" font-weight="700" font-size="23">n8n orchestration</text>
+<text x="416" y="312" fill="#b9c9d9" font-size="19">Security and impact assessment</text>
+<text x="416" y="339" fill="#b9c9d9" font-size="19">Deadline, urgency, priority</text>
+<rect x="790" y="244" width="284" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="790" y="260" width="4" height="108" rx="2" fill="#64dfbe"/>
+<text x="812" y="279" fill="#f1f6fc" font-weight="700" font-size="23">Policy decision</text>
+<text x="812" y="312" fill="#b9c9d9" font-size="19">Applicability and citations</text>
+<text x="812" y="339" fill="#b9c9d9" font-size="19">Automatic-response gate</text>
+<rect x="1140" y="244" width="242" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="1140" y="260" width="4" height="108" rx="2" fill="#64dfbe"/>
+<text x="1162" y="279" fill="#f1f6fc" font-weight="700" font-size="23">Outcome</text>
+<text x="1162" y="312" fill="#b9c9d9" font-size="19">Self-service guidance</text>
+<text x="1162" y="339" fill="#b9c9d9" font-size="19">or engineer review</text>
+<path d="M326 314 H390" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M704 314 H786" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M1074 314 H1136" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="58" y="472" width="268" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="58" y="488" width="4" height="108" rx="2" fill="#8fbaff"/>
+<text x="80" y="507" fill="#f1f6fc" font-weight="700" font-size="23">Confluence</text>
+<text x="80" y="540" fill="#b9c9d9" font-size="19">Approved source articles</text>
+<text x="80" y="567" fill="#b9c9d9" font-size="19">Versioned metadata</text>
+<rect x="394" y="472" width="310" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="394" y="488" width="4" height="108" rx="2" fill="#8fbaff"/>
+<text x="416" y="507" fill="#f1f6fc" font-weight="700" font-size="23">Knowledge ingestion</text>
+<text x="416" y="540" fill="#b9c9d9" font-size="19">Validate approval · split text</text>
+<text x="416" y="567" fill="#b9c9d9" font-size="19">OpenAI embeddings</text>
+<rect x="790" y="472" width="284" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="790" y="488" width="4" height="108" rx="2" fill="#8fbaff"/>
+<text x="812" y="507" fill="#f1f6fc" font-weight="700" font-size="23">Qdrant retrieval</text>
+<text x="812" y="540" fill="#b9c9d9" font-size="19">Filtered approved passages</text>
+<text x="812" y="567" fill="#b9c9d9" font-size="19">Source IDs and versions</text>
+<rect x="1140" y="472" width="242" height="140" rx="16" fill="#172c44" stroke="#344b62"/>
+<rect x="1140" y="488" width="4" height="108" rx="2" fill="#8fbaff"/>
+<text x="1162" y="507" fill="#f1f6fc" font-weight="700" font-size="23">Jira + Slack</text>
+<text x="1162" y="540" fill="#b9c9d9" font-size="19">Ticket and engineer alert</text>
+<text x="1162" y="567" fill="#b9c9d9" font-size="19">Review-decision monitor</text>
+<path d="M326 542 H390" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M704 542 H786" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M932 472 V390" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M1261 384 V468" fill="none" stroke="#65d8c0" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M58 677 H1382" stroke="#344b62"/>
+<text x="58" y="722" fill="#e8f2f7" font-size="22" font-weight="700">Built by Ramy Elhawary</text>
+<text x="58" y="756" fill="#9eb2c8" font-size="19">Final project proof of concept · October 2026</text>
+<text x="1382" y="723" text-anchor="end" fill="#64dfbe" font-size="20">Real requests. Visible decisions. Traceable results.</text>
+</g></svg>
