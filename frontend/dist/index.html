@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Conversational employee IT support with approved knowledge and technician escalation.">
+  <meta name="theme-color" content="#f8f9f7">
+  <title>IT Assist — Employee support</title>
+  <link rel="icon" href="/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true"><defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a9 9 0 0 1 18 0Z"/><path d="M7 10h8M7 14h5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 5v14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r=".7"/></symbol>
+    <symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></symbol>
+    <symbol id="i-device" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8M12 16v5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.5a2.5 2.5 0 1 1 3 4V15M12 18h.01"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9M10 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><path d="M8 3v6M16 9v6M10 15v6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C8 2 4 3 2 4v15c3-1 6-1 10 2 4-3 7-3 10-2V4c-3-1-6-2-10 1Zm0 0v16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  </defs></svg>
+
+  <aside class="sidebar" aria-label="Workspace navigation">
+    <a class="brand" href="/" aria-label="IT Assist home"><img src="/mark.svg" alt="" width="36" height="36"><span>IT Assist<span class="brand-dot">.</span></span></a>
+    <div class="workspace-label">EMPLOYEE WORKSPACE</div>
+    <button class="new-request" id="newRequest"><svg><use href="#i-plus"/></svg>New conversation<span class="key-hint">↗</span></button>
+    <div class="nav-section"><span class="section-label">YOUR CONVERSATIONS</span><span class="tiny-pill" id="historyCount">0</span></div>
+    <div id="history" class="history"><p class="history-empty">Your requests will appear here<br>during this session.</p></div>
+    <div class="sidebar-bottom">
+      <div class="knowledge-note"><span class="small-icon"><svg><use href="#i-book"/></svg></span><div><strong>Guidance you can trace</strong><p>Answers grounded in approved<br>IT support knowledge.</p></div></div>
+      <button class="nav-link" id="helpButton"><svg><use href="#i-help"/></svg>How IT Assist works</button>
+      <button class="nav-link" id="connectionButton"><svg><use href="#i-settings"/></svg>Connection settings</button>
+      <div class="employee-profile"><span class="profile-avatar"><svg><use href="#i-user"/></svg></span><div><strong>Employee support</strong><span>Final project · Local demo</span></div><span class="profile-dot"></span></div>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar"><div class="breadcrumb">Support<span>/</span><strong id="pageTitle">New conversation</strong></div><div class="topbar-right"><span class="connection-badge" id="connectionBadge"><span></span>Local workspace</span><button class="icon-button mobile-new" id="mobileNew" aria-label="New conversation"><svg><use href="#i-plus"/></svg></button><span class="topbar-avatar">IT</span></div></header>
+    <main class="main-grid">
+      <section class="conversation-pane" aria-label="IT support conversation">
+        <div class="conversation-scroll" id="conversationScroll">
+          <div class="welcome" id="welcome">
+            <div class="welcome-heading"><div class="eyebrow"><span class="spark">✦</span> YOUR IT SUPPORT, SIMPLIFIED</div><span class="welcome-label">Let’s work through it together</span></div>
+            <h1>Let’s get you<br><span>back to work.</span></h1>
+            <p class="welcome-description">A helpful conversation. A clear next step.<br>Tell me what’s happening and we’ll take it from there.</p>
+            <div class="topics-heading"><span>What do you need a hand with?</span><span>Or just type below</span></div>
+            <div class="topic-grid" aria-label="Common support topics">
+              <button class="topic" data-topic="VPN & network" data-prompt="I’m having trouble connecting to the VPN. "><span class="topic-icon blue"><svg><use href="#i-network"/></svg></span><span><strong>VPN & network</strong><small>Connection getting in the way?</small></span><span class="topic-arrow">↗</span></button>
+              <button class="topic" data-topic="Apps & software" data-prompt="I need help with an application. "><span class="topic-icon green"><svg><use href="#i-app"/></svg></span><span><strong>Apps & software</strong><small>Something not working as expected?</small></span><span class="topic-arrow">↗</span></button>
+              <button class="topic" data-topic="Email & collaboration" data-prompt="I need help with email or a collaboration tool. "><span class="topic-icon amber"><svg><use href="#i-mail"/></svg></span><span><strong>Email & collaboration</strong><small>Stay connected to your team.</small></span><span class="topic-arrow">↗</span></button>
+              <button class="topic" data-topic="Accounts & devices" data-prompt="I need help with my account or device. "><span class="topic-icon purple"><svg><use href="#i-device"/></svg></span><span><strong>Accounts & devices</strong><small>Access, hardware, and peripherals.</small></span><span class="topic-arrow">↗</span></button>
+            </div>
+            <div class="welcome-footnote"><span class="mini-avatars"><i>AI</i><i>IT</i></span><span>Helpful automation. Human expertise when it matters.</span></div>
+          </div>
+          <div class="message-log" id="messages" role="log" aria-label="Conversation messages" aria-live="polite" aria-relevant="additions"></div>
+          <div id="typing" class="typing hidden" role="status"><img src="/mark.svg" alt="" width="28" height="28"><span class="typing-dots"><i></i><i></i><i></i></span><span id="typingLabel">Connecting to IT support…</span></div>
+          <div id="actions" class="conversation-actions"></div>
+        </div>
+        <div class="composer-area">
+          <form id="composer" class="composer"><label class="sr-only" for="messageInput">Your message</label><textarea id="messageInput" rows="1" maxlength="8000" placeholder="Describe your IT issue in your own words…" autocomplete="off"></textarea><button type="submit" class="send-button" id="sendButton" aria-label="Send message"><svg><use href="#i-arrow"/></svg></button></form>
+          <div class="composer-footer"><span><svg><use href="#i-lock"/></svg>Keep passwords and authentication codes private.</span><span class="enter-hint">Enter to send · Shift + Enter for a new line</span></div>
+        </div>
+      </section>
+
+      <aside class="context-panel" aria-label="Request information">
+        <div class="context-heading"><span class="small-icon"><svg><use href="#i-chat"/></svg></span><h2>Your request</h2><span class="context-tag" id="requestStatus">Not submitted</span></div>
+        <p class="context-intro">The important details, in one place.<br>We’ll fill these in as we talk.</p>
+        <div class="request-overview" id="requestOverview"><div><span>ISSUE</span><p id="contextIssue">Tell us what’s happening</p></div><div><span>PEOPLE AFFECTED</span><p id="contextScope" class="muted">Not provided yet</p></div><div><span>BUSINESS IMPACT</span><p id="contextImpact" class="muted">Not provided yet</p></div><div><span>REQUESTED TIMING</span><p id="contextDeadline" class="muted">Not provided yet</p></div></div>
+        <div class="progress-card"><h3>What happens next</h3><ol><li class="active" data-step="0"><span class="step-number">1</span><div><strong>Understand your issue</strong><p>A few useful details.</p></div></li><li data-step="1"><span class="step-number">2</span><div><strong>Assess and find guidance</strong><p>Relevant, approved knowledge.</p></div></li><li data-step="2"><span class="step-number">3</span><div><strong>Get your next step</strong><p>Self-service or technician support.</p></div></li></ol></div>
+        <div class="human-note"><svg><use href="#i-user"/></svg><p><strong>Your IT team is part of the loop.</strong><br>Requests needing specialist attention go to a technician.</p></div>
+        <div class="context-bottom"><span class="status-dot"></span>AI-assisted · Human-supported</div>
+      </aside>
+    </main>
+  </div>
+
+  <dialog id="helpDialog"><div class="dialog-heading"><h2>Support, one conversation at a time.</h2><button class="icon-button close-dialog" aria-label="Close"><svg><use href="#i-close"/></svg></button></div><p>Describe the issue, then answer the follow-up questions. You can review your details before submitting.</p><p>IT Assist uses approved knowledge to suggest guidance when policy allows. Other requests go to your IT team for review. Instructions alone do not confirm that an issue is resolved.</p><p class="dialog-note">This local demonstration is not an emergency reporting service. Follow your organization’s established process for urgent security incidents.</p></dialog>
+  <dialog id="connectionDialog"><div class="dialog-heading"><h2>Workspace connection</h2><button class="icon-button close-dialog" aria-label="Close"><svg><use href="#i-close"/></svg></button></div><p>The chat connects to the existing local n8n employee-support workflow. Its triage and approval rules remain in n8n.</p><label class="connection-label">EMPLOYEE FORM</label><code id="configuredForm">Loading configuration…</code><p id="connectionResult" role="status">The connection has not been checked.</p><div class="dialog-actions"><button class="primary-button" id="checkConnection">Check connection</button><a id="employeeSignIn" class="secondary-button hidden" target="_blank" rel="noopener noreferrer">Open employee sign-in ↗</a><a id="workflowLink" target="_blank" rel="noopener noreferrer">Open n8n <span>↗</span></a></div><p class="dialog-note">For the production form, publish the main workflow. If prompted, use Open employee sign-in, complete n8n’s sign-in and form approval in this Chrome profile, then return and check again. Authentication stays enabled. No API keys belong in this page.</p></dialog>
+  <dialog id="newDialog"><div class="dialog-heading"><h2>Start a new conversation?</h2><button class="icon-button close-dialog" aria-label="Close"><svg><use href="#i-close"/></svg></button></div><p>The current conversation will stay in this tab’s session history. Starting again will not cancel a request already submitted to IT.</p><div class="dialog-actions"><button class="primary-button" id="confirmNew">Start new conversation</button><button class="secondary-button close-dialog">Keep chatting</button></div></dialog>
+  <div class="sr-only" id="announcer" aria-live="assertive"></div>
+</body>
+</html>
