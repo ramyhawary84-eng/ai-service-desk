@@ -1,5 +1,7 @@
 # Demo walkthrough
 
+**[▶ Watch the full project demonstration](https://share.synthesia.io/ae1de84c-989d-43d8-99d0-855c09134a05)**
+
 The final presentation pairs a male AI presenter with authentic project recordings. Each visual section is tied to its corresponding narration, including request input, executed workflow paths, decision outputs, Jira, and Slack.
 
 The original recordings were captured on 18 October 2026. Use the examples in this repository to repeat the journeys in your own environment; ticket keys and timestamps will differ.
