@@ -1,0 +1,7 @@
+{
+  "n8n_url": "http://localhost:5678",
+  "form_path": "/form/REPLACE_WITH_FORM_ID",
+  "workflow_url": "http://localhost:5678/workflow/REPLACE_WITH_WORKFLOW_ID",
+  "jira_url": "https://your-site.atlassian.net",
+  "port": 5680
+}
