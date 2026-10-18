@@ -1,0 +1,437 @@
+{
+  "name": "02 – Knowledge Ingestion",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "434740a2-31ed-494e-b3d8-86c0e47b2ab2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://your-site.atlassian.net/wiki/api/v2/pages?space-id=YOUR_CONFLUENCE_SPACE_ID&status=current&body-format=storage&limit=100",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8b1e7ffe-bb3d-4b70-8305-1af8071531e1",
+      "name": "Get Confluence Knowledge Pages"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "include": "allOtherFields",
+        "options": {
+          "destinationFieldName": "page"
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "da42a562-d435-4cba-afae-e479c2ed24a2",
+      "name": "Split Out Articles"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "page.body.storage.value",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "article_text",
+              "cssSelector": "body"
+            },
+            {
+              "key": "metadata_text",
+              "cssSelector": "body > p:first-child"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "b5477aa3-5503-4bd3-a69f-b47406cc853d",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5804c24-a462-4f80-9b94-629728736ded",
+              "name": "knowledge_article",
+              "value": "={{ (() => {\n  const page = $('Split Out Articles').item.json.page ?? {};\n  const text = String($json.article_text ?? '').trim();\n  const lines = String($json.metadata_text ?? '')\n    .split(/\\r?\\n/)\n    .map(line => line.trim());\n  const errors = [];\n\n  const readField = (label) => {\n    const prefix = label + ':';\n    const matches = lines.filter(line => line.startsWith(prefix));\n\n    if (matches.length !== 1) {\n      errors.push(label + ': missing or repeated');\n      return '';\n    }\n\n    const value = matches[0].slice(prefix.length).trim();\n    if (!value) errors.push(label + ': empty');\n    return value;\n  };\n\n  const articleId = readField('Article ID');\n  const categoryLabel = readField('Category');\n  const approval = readField('Knowledge approval').toLowerCase();\n  const autoResponse = readField('Automatic response allowed').toLowerCase();\n\n  const categories = {\n    'account/access': 'account_access',\n    'vpn/network': 'vpn_network',\n    'email/collaboration': 'email_collaboration',\n    'hardware/peripherals': 'hardware_peripherals',\n    'software/applications': 'software_applications'\n  };\n\n  const categoryKey = categoryLabel.toLowerCase().replace(/\\s*\\/\\s*/g, '/');\n  const category = Object.keys(categories).includes(categoryKey)\n    ? categories[categoryKey]\n    : 'unclear';\n\n  const pageId = String(page.id ?? '');\n  const title = String(page.title ?? '').trim();\n  const version = page.version?.number;\n  const path = String(page._links?.webui ?? '');\n  const sourceUrl = path.startsWith('/spaces/')\n    ? 'https://your-site.atlassian.net/wiki' + path\n    : '';\n\n  if (!/^KB-\\d+$/.test(articleId))\n    errors.push('Invalid article ID');\n\n  if (category === 'unclear')\n    errors.push('Unknown category');\n\n  if (!['draft', 'approved', 'retired'].includes(approval))\n    errors.push('Unknown approval status');\n\n  if (!['yes', 'no'].includes(autoResponse))\n    errors.push('Automatic response must be Yes or No');\n\n  if (!/^\\d+$/.test(pageId))\n    errors.push('Missing or invalid Confluence page ID');\n\n  if (!title)\n    errors.push('Missing page title');\n\n  if (String(page.spaceId ?? '') !== 'YOUR_CONFLUENCE_SPACE_ID')\n    errors.push('Unexpected Confluence space');\n\n  if (!Number.isInteger(version) || version < 1)\n    errors.push('Missing or invalid page version');\n\n  if (!sourceUrl)\n    errors.push('Missing source link');\n\n  if (page.status !== 'current')\n    errors.push('Page is not published');\n\n  if (!text)\n    errors.push('Article text is empty');\n\n  const eligible = errors.length === 0 && approval === 'approved';\n\n  return {\n    article_id: articleId,\n    page_id: pageId,\n    title,\n    source_url: sourceUrl,\n    source_version: Number.isInteger(version) ? version : null,\n    space_id: String(page.spaceId ?? ''),\n    category,\n    knowledge_approval: approval,\n    automatic_response_allowed: eligible && autoResponse === 'yes',\n    text,\n    validation_errors: errors,\n    index_eligible: eligible,\n    exclusion_reason: errors.length\n      ? errors.join('; ')\n      : (eligible ? '' : 'Knowledge approval is ' + approval + '.')\n  };\n})() }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        896,
+        0
+      ],
+      "id": "e77f3a73-aa7b-4839-9ddb-78e32a971a0e",
+      "name": "Prepare Knowledge Article"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "27453cc8-907d-45d5-b9ad-01cdc34bd399",
+              "leftValue": "={{ $json.knowledge_article?.index_eligible === true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        -144
+      ],
+      "id": "38a114a9-be0e-4130-a2c1-0508b74647b2",
+      "name": "Approved for Indexing"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "it_service_desk_kb",
+          "mode": "list"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        -208
+      ],
+      "id": "447440a1-0e05-4a51-8660-8594d67dba23",
+      "name": "Store Approved Knowledge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1440,
+        128
+      ],
+      "id": "5b2386d5-baf4-4aff-9619-71edcf2a1355",
+      "name": "Embeddings OpenAI"
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.knowledge_article.text }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "article_id",
+                "value": "={{ $json.knowledge_article.article_id }}"
+              },
+              {
+                "name": "page_id",
+                "value": "={{ $json.knowledge_article.page_id }}"
+              },
+              {
+                "name": "title",
+                "value": "={{ $json.knowledge_article.title }}"
+              },
+              {
+                "name": "source_url",
+                "value": "={{ $json.knowledge_article.source_url }}"
+              },
+              {
+                "name": "source_version",
+                "value": "={{ $json.knowledge_article.source_version }}"
+              },
+              {
+                "name": "space_id",
+                "value": "={{ $json.knowledge_article.space_id }}"
+              },
+              {
+                "name": "category",
+                "value": "={{ $json.knowledge_article.category }}"
+              },
+              {
+                "name": "knowledge_approval",
+                "value": "={{ $json.knowledge_article.knowledge_approval }}"
+              },
+              {
+                "name": "automatic_response_allowed",
+                "value": "={{ $json.knowledge_article.automatic_response_allowed }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1616,
+        128
+      ],
+      "id": "2daf2203-c497-4b12-94ea-197bbf49d0f1",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1840,
+        0
+      ],
+      "id": "754afcee-ab92-42d3-ae80-bb786092604c",
+      "name": "Process Knowledge Articles"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://your-cluster.cloud.qdrant.io/collections/it_service_desk_kb/points/delete?wait=true",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "qdrantApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ (() => {\n  const article = $json.knowledge_article;\n\n  const pageId = String(article?.page_id ?? '').trim();\n  const spaceId = String(article?.space_id ?? '').trim();\n  const sourceUrl = String(article?.source_url ?? '').trim();\n\n  const expectedUrl =\n    'https://your-site.atlassian.net/wiki/spaces/IS/pages/' + pageId;\n\n  if (\n    !/^\\d+$/.test(pageId) ||\n    spaceId !== 'YOUR_CONFLUENCE_SPACE_ID' ||\n    !(\n      sourceUrl === expectedUrl ||\n      sourceUrl.startsWith(expectedUrl + '/')\n    )\n  ) {\n    throw new Error(\n      'Cleanup stopped: missing or unexpected Confluence page identity.'\n    );\n  }\n\n  return {\n    filter: {\n      must: [\n        {\n          key: 'metadata.page_id',\n          match: { value: pageId }\n        },\n        {\n          key: 'metadata.space_id',\n          match: { value: spaceId }\n        }\n      ]\n    }\n  };\n})() }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2176,
+        112
+      ],
+      "id": "e4263f72-2cf9-4c40-a4f4-1d86082e075f",
+      "name": "Remove Previous Article Chunks"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8f8ad2d7-f042-4eab-b9a4-b66bf94ff444",
+              "name": "knowledge_article",
+              "value": "={{ (() => {\n  if (\n    $json.status !== 'ok' ||\n    $json.result?.status !== 'completed'\n  ) {\n    throw new Error('Qdrant did not confirm article cleanup.');\n  }\n\n  return $('Process Knowledge Articles').item.json.knowledge_article;\n})() }}",
+              "type": "object"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2400,
+        112
+      ],
+      "id": "06510f1f-4f44-48e2-82ad-a37a2c826994",
+      "name": "Restore Knowledge Article"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Confluence Knowledge Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Confluence Knowledge Pages": {
+      "main": [
+        [
+          {
+            "node": "Split Out Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Articles": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Prepare Knowledge Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Knowledge Article": {
+      "main": [
+        [
+          {
+            "node": "Process Knowledge Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved for Indexing": {
+      "main": [
+        [
+          {
+            "node": "Store Approved Knowledge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Process Knowledge Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Approved Knowledge": {
+      "main": [
+        [
+          {
+            "node": "Process Knowledge Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Store Approved Knowledge",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Store Approved Knowledge",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Knowledge Articles": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Remove Previous Article Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Previous Article Chunks": {
+      "main": [
+        [
+          {
+            "node": "Restore Knowledge Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore Knowledge Article": {
+      "main": [
+        [
+          {
+            "node": "Approved for Indexing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Berlin"
+  },
+  "pinData": {}
+}

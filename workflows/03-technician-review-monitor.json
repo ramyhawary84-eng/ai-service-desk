@@ -1,0 +1,266 @@
+{
+  "name": "03 – Technician Review Monitor",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a7ed89a5-3a47-45d4-99f6-ac35c5f9c390",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://your-site.atlassian.net/rest/api/3/search/jql",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "jql",
+              "value": "project = YOUR_JIRA_PROJECT_KEY AND labels = \"ai-service-desk\" AND labels IN (\"ai-review-approved\", \"ai-review-rejected\") AND labels NOT IN (\"ai-review-pending\", \"ai-review-notified\") ORDER BY updated ASC"
+            },
+            {
+              "name": "fields",
+              "value": "summary,labels,priority,updated"
+            },
+            {
+              "name": "maxResults",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "d3ff6a4f-5727-41fc-8f0a-721e6fe315f0",
+      "name": "Find Reviewed Tickets"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "issues",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        480,
+        0
+      ],
+      "id": "74cd91f7-1c2b-4f13-aa86-5dfae83804fb",
+      "name": "Split Reviewed Tickets"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "YOUR_SLACK_CHANNEL_ID",
+          "mode": "id"
+        },
+        "text": "={{ (() => {\n  const labels = $json.fields.labels ?? [];\n  const approved = labels.includes('ai-review-approved');\n  const rejected = labels.includes('ai-review-rejected');\n\n  if (\n    approved === rejected ||\n    labels.includes('ai-review-pending') ||\n    labels.includes('ai-review-notified')\n  ) {\n    throw new Error('Missing, conflicting or already-notified review decision.');\n  }\n\n  return [\n    '*DEMO — AI draft review update*',\n    '*Ticket:* <https://your-site.atlassian.net/browse/' +\n      $json.key + '|' + $json.key + '>',\n    '*Decision recorded in Jira:* ' +\n      (approved ? 'APPROVED' : 'REJECTED'),\n    approved\n      ? 'Technician: use the final reviewed response recorded in Jira and handle employee follow-up.'\n      : 'Technician: revise the draft using the review comments. Do not send the rejected draft.',\n    'This notification does not mean the incident is resolved.',\n    'No employee response was sent by this workflow.'\n  ].join('\\n\\n');\n})() }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        1264,
+        -80
+      ],
+      "id": "dd397308-b287-4411-bc77-660ad1289ece",
+      "name": "Notify Review Decision"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ 'https://your-site.atlassian.net/rest/api/3/issue/' + $('Split Reviewed Tickets').item.json.key }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"update\": {\n    \"labels\": [\n      {\n        \"add\": \"ai-review-notified\"\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        -80
+      ],
+      "id": "29dade02-0d9a-4746-826e-6a5a33a2e8c2",
+      "name": "Mark Review Notified"
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://your-site.atlassian.net/rest/api/3/issue/' + $json.key }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "summary,labels,priority,updated"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        720,
+        0
+      ],
+      "id": "64b5c2a0-13ba-4efa-9be4-d7d27aaa9490",
+      "name": "Get Current Review"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3adc49d8-823f-4c53-a704-8b096d77322b",
+              "leftValue": "={{ (() => {\n  const labels = $json.fields?.labels;\n\n  if (!Array.isArray(labels)) return false;\n\n  const approved = labels.includes('ai-review-approved');\n  const rejected = labels.includes('ai-review-rejected');\n\n  return labels.includes('ai-service-desk')\n    && !labels.includes('ai-review-notified')\n    && !labels.includes('ai-review-pending')\n    && approved !== rejected;\n})() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        944,
+        0
+      ],
+      "id": "6a2a6312-a0f4-4d66-9bc5-04c44556c039",
+      "name": "Review Still Unnotified?"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -16,
+        224
+      ],
+      "id": "abfa9a8b-23b1-4472-89a0-4d5c2efb50ac",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Find Reviewed Tickets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Reviewed Tickets": {
+      "main": [
+        [
+          {
+            "node": "Split Reviewed Tickets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Reviewed Tickets": {
+      "main": [
+        [
+          {
+            "node": "Get Current Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Review Decision": {
+      "main": [
+        [
+          {
+            "node": "Mark Review Notified",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Review": {
+      "main": [
+        [
+          {
+            "node": "Review Still Unnotified?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Still Unnotified?": {
+      "main": [
+        [
+          {
+            "node": "Notify Review Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find Reviewed Tickets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Berlin"
+  },
+  "pinData": {}
+}
