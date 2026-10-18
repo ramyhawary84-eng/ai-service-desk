@@ -1,0 +1,50 @@
+{
+  "packaged_on": "2026-10-18",
+  "workflows": [
+    {
+      "file": "01-ai-service-desk.json",
+      "source_filename": "01 \u2013 AI Service Desk MVP (6).json",
+      "source_sha256": "56b5309e301b730bad0d37ac9cc281c5ac7af8b55711836586c302a10528e372",
+      "published_sha256": "81b2afb956c3ae75ec3e3cfda949dc264f6675cc5493e2281ceb0b2ce5a7275f",
+      "nodes": 46,
+      "source_file_saved_at": "2026-10-16T16:17:07.464391+00:00",
+      "configuration_status": "User confirmed on 2026-10-18 that saved exports match the workflows running in Docker. Live Docker comparison was not performed.",
+      "publication_changes": [
+        "Removed credential references and account metadata",
+        "Replaced account-specific endpoints and identifiers with placeholders",
+        "Set active false",
+        "Set explicit Europe/Berlin timezone for this demo template"
+      ]
+    },
+    {
+      "file": "02-knowledge-ingestion.json",
+      "source_filename": "02 \u2013 Knowledge Ingestion (4).json",
+      "source_sha256": "f6ccf8c3f03f43a2f6833ffc78a5403b8201e5cea00dd6e7dad494dffa7d831a",
+      "published_sha256": "9630ab9e0549d93b7cb389066ae7c2f489de5078a8801caf355ffefbe6f9570b",
+      "nodes": 12,
+      "source_file_saved_at": "2026-10-16T16:19:28.682687+00:00",
+      "configuration_status": "User confirmed on 2026-10-18 that saved exports match the workflows running in Docker. Live Docker comparison was not performed.",
+      "publication_changes": [
+        "Removed credential references and account metadata",
+        "Replaced account-specific endpoints and identifiers with placeholders",
+        "Set active false",
+        "Set explicit Europe/Berlin timezone for this demo template"
+      ]
+    },
+    {
+      "file": "03-technician-review-monitor.json",
+      "source_filename": "03 \u2013 Technician Review Monitor.json",
+      "source_sha256": "389634e379a0a2ea4dd5af6009572df6b490c5cae5ce8c7bab7337558109ae28",
+      "published_sha256": "250b3ae6cb17f325eac0cae92bab50d883644ec818a463bc820a09a78cfc7aed",
+      "nodes": 8,
+      "source_file_saved_at": "2026-10-16T16:19:19.735324+00:00",
+      "configuration_status": "User confirmed on 2026-10-18 that saved exports match the workflows running in Docker. Live Docker comparison was not performed.",
+      "publication_changes": [
+        "Removed credential references and account metadata",
+        "Replaced account-specific endpoints and identifiers with placeholders",
+        "Set active false",
+        "Set explicit Europe/Berlin timezone for this demo template"
+      ]
+    }
+  ]
+}
