@@ -1,0 +1,58 @@
+{
+  "note": "Fictional demonstration inputs. Change the run marker between fresh test sessions. For the duplicate test, repeat the exact same request within 30 minutes.",
+  "requests": [
+    {
+      "case": "edge-self-service",
+      "expected": "P4, applicable KB-002 guidance, Jira record, ticket remains open",
+      "input": {
+        "requester_email": "alex@example.com",
+        "summary": "DEMO-01 – Accidental Microsoft Edge zoom",
+        "description": "On Windows 11, I accidentally enlarged one webpage in Microsoft Edge. I want to restore its default page zoom. Other tabs and applications look normal. This is not an accessibility setting. No account or security issue is involved.",
+        "affected_scope": "Only me",
+        "business_effect": "Reading one internal reference page is inconvenient. I can continue all work in another tab. No payments, customers, or business deadlines are affected.",
+        "workaround": "Yes",
+        "needed_by": "Today"
+      }
+    },
+    {
+      "case": "vpn-payroll-p1",
+      "expected": "P1 / Highest, applicable KB-001 draft, immediate engineer attention and technician review",
+      "input": {
+        "requester_email": "alex@example.com",
+        "summary": "DEMO-01 – VPN failure blocks payroll submission",
+        "description": "I intentionally changed my work password. FortiClient on Windows 11 now shows VPN connection failed. Normal internet works. No unexpected MFA prompts or unfamiliar sign-ins were reported.",
+        "affected_scope": "Only me",
+        "business_effect": "I cannot submit payroll for 500 employees. The bank submission cutoff is one hour from now. Missing it delays every employee's pay by two days. There is no alternative submission process or available workaround.",
+        "workaround": "No",
+        "needed_by": "Within 1 hour"
+      }
+    },
+    {
+      "case": "security-mfa",
+      "expected": "Security-review branch and specialist handoff; compromise is not confirmed",
+      "input": {
+        "requester_email": "alex@example.com",
+        "summary": "DEMO-01 – Unrequested MFA prompts",
+        "description": "I received three MFA approval prompts that I did not initiate. I did not approve them. I suspect someone may be trying to access my work account.",
+        "affected_scope": "Only me",
+        "business_effect": "Possible unauthorized access to my work account needs immediate security assessment. I can continue offline work, but I cannot assess whether the account is safe.",
+        "workaround": "Not sure",
+        "needed_by": "Within 1 hour"
+      }
+    },
+    {
+      "case": "no-knowledge-and-exact-duplicate",
+      "expected": "No applicable knowledge with the two-article library; technician handoff. Repeat exactly to verify existing-ticket response.",
+      "input": {
+        "requester_email": "alex@example.com",
+        "summary": "DEMO-01 – Wired USB mouse unresponsive",
+        "description": "My wired USB mouse is unresponsive on Windows 11. The laptop touchpad and USB keyboard work normally. Reconnecting the mouse once did not help. No error message or security concern.",
+        "affected_scope": "Only me",
+        "business_effect": "Using the touchpad is less convenient, but I can continue all work. No business deadlines, payments, or customers are affected.",
+        "workaround": "Yes",
+        "needed_by": "Today"
+      }
+    }
+  ]
+}
+
