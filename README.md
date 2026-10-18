@@ -4,6 +4,12 @@
 
 Built by **Ramy Elhawary** as a completed final-project proof of concept, October 2026.
 
+### Watch the project demo
+
+**[▶ Watch the full IT Assist demonstration](https://share.synthesia.io/ae1de84c-989d-43d8-99d0-855c09134a05)**
+
+A narrated walkthrough with real employee requests, n8n execution paths, approved knowledge retrieval, Jira tickets, Slack notifications, and technician review.
+
 ![IT Assist architecture](docs/assets/architecture.svg)
 
 An employee describes a technical issue in a guided chat. The system collects useful context, checks for security concerns, assesses business impact, retrieves approved knowledge, and either provides eligible self-service guidance or prepares a cited draft for an engineer. Jira records the request; Slack keeps the IT team informed.
