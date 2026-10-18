@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "knowledge_applicability": {
+      "type": "string",
+      "enum": [
+        "supported",
+        "no_match",
+        "insufficient"
+      ]
+    },
+    "applicability_reason": {
+      "type": "string"
+    },
+    "draft_response": {
+      "type": "string"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "article_id": {
+            "type": "string"
+          },
+          "source_url": {
+            "type": "string"
+          },
+          "source_version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "article_id",
+          "source_url",
+          "source_version"
+        ]
+      }
+    },
+    "technician_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "knowledge_applicability",
+    "applicability_reason",
+    "draft_response",
+    "citations",
+    "technician_notes"
+  ]
+}

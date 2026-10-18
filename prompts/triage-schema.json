@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "account_access",
+        "vpn_network",
+        "email_collaboration",
+        "hardware_peripherals",
+        "software_applications",
+        "unclear"
+      ]
+    },
+    "request_summary": {
+      "type": "string"
+    },
+    "security_status": {
+      "type": "string",
+      "enum": [
+        "reported",
+        "none_reported",
+        "unclear"
+      ]
+    },
+    "security_indicators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "missing_information": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "clarification_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 2
+    }
+  },
+  "required": [
+    "category",
+    "request_summary",
+    "security_status",
+    "security_indicators",
+    "missing_information",
+    "clarification_questions"
+  ],
+  "additionalProperties": false
+}
